@@ -22,6 +22,7 @@ setup(
                 "launch/experiment4_demo.launch.py",
                 "launch/project2_speed_control.launch.py",
                 "launch/project2_demo.launch.py",
+                "launch/lidar_view.launch.py",
             ],
         ),
     ],
