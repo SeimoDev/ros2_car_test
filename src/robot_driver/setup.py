@@ -22,6 +22,9 @@ setup(
             "test_motor = robot_driver.test_motor:main",
             "test_lidar = robot_driver.test_lidar:main",
             "test_camera = robot_driver.test_camera:main",
+            "drive_state_publisher = robot_driver.drive_state_publisher:main",
+            "heading_pid = robot_driver.heading_pid:main",
+            "safety_stop = robot_driver.safety_stop:main",
         ],
     },
 )

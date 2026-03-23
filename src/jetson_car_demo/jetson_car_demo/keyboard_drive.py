@@ -11,6 +11,7 @@ HELP = """Keyboard drive demo
 -------------------
 w/s : forward/back
 j/l : turn left/right
+i/k : accelerate/decelerate
 x   : stop
 q   : quit
 """
@@ -20,10 +21,10 @@ class KeyboardDrive(Node):
     def __init__(self):
         super().__init__("keyboard_drive")
         self.publisher = self.create_publisher(Twist, "cmd_vel", 10)
-        self.linear_step = float(self.declare_parameter("linear_step", 0.2).value)
-        self.angular_step = float(self.declare_parameter("angular_step", 0.6).value)
-        self.max_linear = float(self.declare_parameter("max_linear", 1.0).value)
-        self.max_angular = float(self.declare_parameter("max_angular", 2.0).value)
+        self.linear_step = float(self.declare_parameter("linear_step", 2.0).value)
+        self.angular_step = float(self.declare_parameter("angular_step", 6.0).value)
+        self.max_linear = float(self.declare_parameter("max_linear", 10.0).value)
+        self.max_angular = float(self.declare_parameter("max_angular", 20.0).value)
         self.linear = 0.0
         self.angular = 0.0
         self.get_logger().info(HELP)
@@ -41,6 +42,14 @@ class KeyboardDrive(Node):
     def clamp(value, limit):
         return max(min(value, limit), -limit)
 
+    @staticmethod
+    def decelerate_towards_zero(value, step):
+        if value > 0.0:
+            return max(0.0, value - step)
+        if value < 0.0:
+            return min(0.0, value + step)
+        return 0.0
+
     def handle_key(self, key):
         if key == "w":
             self.linear = self.clamp(self.linear + self.linear_step, self.max_linear)
@@ -50,6 +59,11 @@ class KeyboardDrive(Node):
             self.angular = self.clamp(self.angular + self.angular_step, self.max_angular)
         elif key == "l":
             self.angular = self.clamp(self.angular - self.angular_step, self.max_angular)
+        elif key == "i":
+            direction = 1.0 if self.linear >= 0.0 else -1.0
+            self.linear = self.clamp(self.linear + direction * self.linear_step, self.max_linear)
+        elif key == "k":
+            self.linear = self.decelerate_towards_zero(self.linear, self.linear_step)
         elif key == "x":
             self.linear = 0.0
             self.angular = 0.0

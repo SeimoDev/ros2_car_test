@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'keyboard_drive = jetson_car_demo.keyboard_drive:main',
+            'teleop_keyboard = jetson_car_demo.teleop_keyboard:main',
             'camera_viewer = jetson_car_demo.camera_viewer:main',
         ],
     },
